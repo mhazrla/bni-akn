@@ -1,0 +1,354 @@
+<!-- Start Breadcrumbs -->
+<app-breadcrumbs
+  title="Transaksi"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+<!-- End Breadcrumbs -->
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header border-0">
+        <div class="row align-items-center gy-3">
+          <div class="col-sm">
+            <h5 class="card-title mb-0">Transaksi</h5>
+          </div>
+        </div>
+      </div>
+      <div class="card-body border border-dashed border-end-0 border-start-0">
+        <div class="row align-items-center gy-3 d-flex justify-content-between">
+          <div class="col-xxl-5 col-sm-6">
+            <div class="search-box">
+              <input
+                type="text"
+                name="searchTerm"
+                class="form-control"
+                placeholder="Search for Name, detail, or something..."
+                [(ngModel)]="service.searchTerm"
+              />
+              <i class="ri-search-line search-icon"></i>
+            </div>
+          </div>
+          <!--end col-->
+          <div class="col-sm-auto hstack gap-2">
+            <button
+              *ngIf="userLogged.role_id == 3"
+              type="button"
+              class="btn btn-success add-btn"
+              data-bs-toggle="modal"
+              id="create-btn"
+              data-bs-target="#showModal"
+              (click)="openModal(content)"
+            >
+              <i class="ri-add-line align-bottom me-1"></i> Tambah Bukti
+              Transaksi
+            </button>
+           
+          </div>
+          <!-- end col -->
+        </div>
+        <!--end row-->
+      </div>
+      <div class="card-body pt-0">
+        <div>
+          <!-- Table -->
+          <div class="table-responsive table-card mb-0 mt-3">
+            <table class="table">
+              <thead>
+                <tr class="bg-light text-muted text-uppercase">
+                  <th class="sort" transaksisortable="nama_vendor">
+                    Nama Vendor
+                  </th>
+                  <th class="sort" transaksisortable="tanggal">
+                    Tanggal Transaksi
+                  </th>
+                  <th class="sort" transaksisortable="invoice_path">File</th>
+                  <th class="sort" transaksisortable="status">Status</th>
+                  <th
+                    *ngIf="userLogged.role_id === 1 || userLogged.role_id === 2"
+                    class="sort"
+                  >
+                    Action
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let data of requests">
+                  <tr id="r_{{ data.id }}">
+                    <td>
+                      <ngb-highlight
+                        [result]="data.vendor"
+                        [term]="service.searchTerm"
+                      ></ngb-highlight>
+                    </td>
+                    <td>
+                      <ngb-highlight
+                        [result]="data.tanggal"
+                        [term]="service.searchTerm"
+                      ></ngb-highlight>
+                    </td>
+                    <td>
+                      <a
+                        [href]="
+                          'http://localhost:3000/api/pdf/download/' +
+                          data.invoice_path
+                        "
+                        download
+                        target="_blank"
+                      >
+                        Download PDF
+                      </a>
+                    </td>
+                    <td>
+                      <ngb-highlight
+                        [result]="
+                          data.status === 1
+                            ? 'Sudah diverifikasi'
+                            : 'Belum diverifikasi'
+                        "
+                        [term]="service.searchTerm"
+                      ></ngb-highlight>
+                    </td>
+
+                    <td
+                      *ngIf="
+                        userLogged.role_id === 1 || userLogged.role_id === 2
+                      "
+                    >
+                      <ul
+                        *ngIf="data.status === 0"
+                        class="list-inline hstack gap-2 mb-0"
+                      >
+                        <li
+                          class="list-inline-item edit"
+                          data-bs-toggle="tooltip"
+                          data-bs-trigger="hover"
+                          ngbTooltip="Edit"
+                          placement="top"
+                          (click)="confirm(verifiedStatus, data.id)"
+                        >
+                          <a
+                            class="text-danger d-inline-block edit-item-btn"
+                            data-bs-toggle="modal"
+                            data-bs-target="#deleteRole"
+                          >
+                            <i class="ri-file-fill fs-16"></i>
+                          </a>
+                        </li>
+                      </ul>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
+          <div
+            class="row justify-content-md-between align-items-md-center gy-2"
+          >
+            <div class="col col-sm-6">
+              <div
+                class="dataTables_info mb-2"
+                id="tickets-table_info"
+                role="status"
+                aria-live="polite"
+              >
+                Showing
+                {{ service.startIndex }} to {{ service.endIndex }} of
+                {{ service.totalRecords }}
+                entries
+              </div>
+            </div>
+            <!-- Pagination -->
+            <div class="col col-sm-6">
+              <div class="text-sm-right float-end listjs-pagination">
+                <ngb-pagination
+                  [collectionSize]="(total | async)!"
+                  [(page)]="service.page"
+                  [pageSize]="service.pageSize"
+                >
+                </ngb-pagination>
+              </div>
+            </div>
+            <!-- End Pagination -->
+          </div>
+          <!-- End Table -->
+
+          <!-- User Create Modal -->
+
+          <ng-template #content role="document" let-modal>
+            <div class="modal-header bg-light p-3">
+              <h5 class="modal-title" id="exampleModalLabel">Add User</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+                id="close-modal"
+                (click)="cancelEdit(); disableEditMode()"
+              ></button>
+            </div>
+            <form
+              (ngSubmit)="saveTransaksi()"
+              [formGroup]="transaksiForm"
+              class="tablelist-form"
+              autocomplete="off"
+            >
+              <div class="modal-body">
+                <input type="hidden" name="id" value="" formControlName="id" />
+                <!-- Nama Vendor -->
+                <div class="mb-3">
+                  <label for="nama_vendor-field" class="form-label"
+                    >Nama Vendor</label
+                  >
+
+                  <input
+                    type="text"
+                    id="nama_vendor-field"
+                    class="form-control"
+                    placeholder="Nama Vendor"
+                    required
+                    formControlName="nama_vendor"
+                    [ngClass]="{
+                      'is-invalid': form['nama_vendor'].errors
+                    }"
+                  />
+                  <div
+                    *ngIf="form['nama_vendor'].errors"
+                    class="invalid-feedback"
+                    align="left"
+                  >
+                    <div *ngIf="form['nama_vendor'].errors['required']">
+                      Nama Vendor wajib diisi
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Tanggal -->
+                <div class="mb-3">
+                  <label for="no_po-field" class="form-label"
+                    >Tanggal Transaksi</label
+                  >
+
+                  <input
+                    type="date"
+                    id="tanggal-field"
+                    class="form-control"
+                    required
+                    formControlName="tanggal"
+                    [ngClass]="{
+                      'is-invalid': form['tanggal'].errors
+                    }"
+                  />
+                  <div
+                    *ngIf="form['tanggal'].errors"
+                    class="invalid-feedback"
+                    align="left"
+                  >
+                    <div *ngIf="form['tanggal'].errors['required']">
+                      Tanggal transaksi wajib diisi
+                    </div>
+                  </div>
+                  <!-- Vendor -->
+                </div>
+                <!-- Bukti Transaksi -->
+                <div class="mb-3">
+                  <label for="invoice_path" class="form-label"
+                    >Bukti Transaksi</label
+                  >
+
+                  <input
+                    type="file"
+                    id="invoice_path"
+                    class="form-control"
+                    required
+                    (change)="readPDF($event)"
+                    formControlName="invoice_path"
+                    [ngClass]="{
+                      'is-invalid': form['invoice_path'].errors
+                    }"
+                  />
+                  <div
+                    *ngIf="form['invoice_path'].errors"
+                    class="invalid-feedback"
+                    align="left"
+                  >
+                    <div *ngIf="form['invoice_path'].errors['required']">
+                      Bukti transaksi wajib diisi
+                    </div>
+                  </div>
+                  <!-- Bukti Transaksi -->
+                </div>
+              </div>
+              <div class="modal-footer">
+                <div class="hstack gap-2 justify-content-end">
+                  <button
+                    type="button"
+                    class="btn btn-light"
+                    data-bs-dismiss="modal"
+                    (click)="cancelEdit()"
+                  >
+                    Close
+                  </button>
+                  <button type="submit" class="btn btn-primary" id="add-btn">
+                    Tambah bukti transaksi
+                  </button>
+                </div>
+              </div>
+            </form>
+          </ng-template>
+          <!--End Modal -->
+          <div id="elmLoader">
+            <div class="spinner-border text-primary avatar-sm" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--end col-->
+  </div>
+  <!--end row-->
+
+  <!-- removeItemModal -->
+  <ng-template #verifiedStatus let-modal>
+    <div class="modal-content">
+      <div class="modal-header">
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          id="btn-close"
+          (click)="modal.dismiss('Cross click')"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="mt-2 text-center">
+          <div class="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
+            <h4>Apakah Anda yakin ingin menverifikasi transaksi ini ?</h4>
+          </div>
+        </div>
+        <div class="d-flex gap-2 justify-content-center mt-4 mb-2">
+          <button
+            class="btn btn-link link-success fw-medium text-decoration-none"
+            data-bs-dismiss="modal"
+            id="deleteRecord-close"
+            (click)="modal.close('Close click')"
+          >
+            <i class="ri-close-line me-1 align-middle"></i> Close
+          </button>
+          <button
+            type="button"
+            class="btn w-sm btn-primary"
+            id="delete-product"
+            (click)="verifiedData(verifiedId)"
+            (click)="modal.close('Close click')"
+          >
+            Ya!
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </ng-template>
+</div>
