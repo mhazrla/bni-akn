@@ -55,6 +55,9 @@
               <thead>
                 <tr class="bg-light text-muted text-uppercase">
                   <th class="sort" pemesanansortable="nama_barang">
+                    ID Produk
+                  </th>
+                  <th class="sort" pemesanansortable="nama_barang">
                     Nama Barang
                   </th>
                   <th class="sort" pemesanansortable="jumlah">Jumlah</th>
@@ -66,6 +69,12 @@
               <tbody>
                 <ng-container *ngFor="let data of requests">
                   <tr id="r_{{ data.id }}">
+                    <td>
+                      <ngb-highlight
+                        [result]="data.id_product"
+                        [term]="service.searchTerm"
+                      ></ngb-highlight>
+                    </td>
                     <td>
                       <ngb-highlight
                         [result]="data.nama_barang"
@@ -181,7 +190,7 @@
 
           <ng-template #content role="document" let-modal>
             <div class="modal-header bg-light p-3">
-              <h5 class="modal-title" id="exampleModalLabel">Add User</h5>
+              <h5 class="modal-title" id="exampleModalLabel">Add Pemesanan</h5>
               <button
                 type="button"
                 class="btn-close"
@@ -208,8 +217,8 @@
                       <ng-select
                         [items]="products"
                         bindLabel="nama_barang"
-                        bindValue="id"
-                        formControlName="product_id"
+                        bindValue="id_product"
+                        formControlName="id_product"
                         (ngModelChange)="onProductSelected($event)"
                       >
                         <ng-template ng-optgroup-tmp let-item="item">
@@ -482,11 +491,6 @@
             </form>
           </ng-template>
           <!--End Modal -->
-          <div id="elmLoader">
-            <div class="spinner-border text-primary avatar-sm" role="status">
-              <span class="visually-hidden">Loading...</span>
-            </div>
-          </div>
         </div>
       </div>
     </div>

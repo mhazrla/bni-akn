@@ -42,7 +42,6 @@
             >
               <i class="ri-add-line align-bottom me-1"></i> Tambah Persediaan
             </button>
-
           </div>
           <!-- end col -->
         </div>
@@ -55,6 +54,13 @@
             <table class="table">
               <thead>
                 <tr class="bg-light text-muted text-uppercase">
+                  <th
+                    class="sort"
+                    persediaansortable="id_product"
+                    (persediaansort)="onSort($event)"
+                  >
+                    ID Produk
+                  </th>
                   <th
                     class="sort"
                     persediaansortable="nama_barang"
@@ -82,6 +88,12 @@
               <tbody>
                 <ng-container *ngFor="let data of stocks">
                   <tr id="r_{{ data.id }}">
+                    <td>
+                      <ngb-highlight
+                        [result]="data.id_product"
+                        [term]="service.searchTerm"
+                      ></ngb-highlight>
+                    </td>
                     <td>
                       <ngb-highlight
                         [result]="data.nama_barang"
@@ -209,8 +221,8 @@
                       <ng-select
                         [items]="products"
                         bindLabel="nama_barang"
-                        bindValue="id"
-                        formControlName="product_id"
+                        bindValue="id_product"
+                        formControlName="id_product"
                         (ngModelChange)="onProductSelected($event)"
                       >
                         <ng-template ng-optgroup-tmp let-item="item">
@@ -353,11 +365,6 @@
             </form>
           </ng-template>
           <!--End Modal -->
-          <div id="elmLoader">
-            <div class="spinner-border text-primary avatar-sm" role="status">
-              <span class="visually-hidden">Loading...</span>
-            </div>
-          </div>
         </div>
       </div>
     </div>

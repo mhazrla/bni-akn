@@ -10,11 +10,8 @@ import {
 } from './pemesanan-sortable.directive';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from 'src/app/core/services/alert.service';
-import { ngxCsv } from 'ngx-csv';
 import { RestApiPemesananDataService } from 'src/app/core/services/rest-api-pemesanan-data.service';
 import { Router } from '@angular/router';
-import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
 
 @Component({
   selector: 'app-pemesanan',
@@ -88,7 +85,7 @@ export class PemesananComponent {
 
     this.pemesananForm = this.formBuilder.group({
       id: '',
-      product_id: ['', [Validators.required]],
+      id_product: ['', [Validators.required]],
       satuan: ['', [Validators.required]],
       jumlah: ['', [Validators.required, Validators.min(1)]],
       harga_satuan: ['', [Validators.required]],
@@ -113,8 +110,7 @@ export class PemesananComponent {
       this.calculateTotalHarga();
     });
 
-    document.getElementById('elmLoader')?.classList.add('d-none');
-    this.getProducts();
+    this.getStocks();
   }
 
   updateCheckbox(event: Event) {
@@ -123,10 +119,10 @@ export class PemesananComponent {
   }
 
   /**
-   * Get All Products
+   * Get All Stocks
    */
-  getProducts() {
-    this.apiService.getAllProducts().subscribe((data) => {
+  getStocks() {
+    this.apiService.getAllStocks().subscribe((data) => {
       this.products = data.data;
     });
   }
@@ -145,12 +141,12 @@ export class PemesananComponent {
    */
   enableEditMode() {
     this.isEditMode = true;
-    this.pemesananForm.get('nama_barang')?.disable();
+    this.pemesananForm.get('id_product')?.disable();
   }
 
   disableEditMode() {
     this.isEditMode = false;
-    this.pemesananForm.get('nama_barang')?.enable();
+    this.pemesananForm.get('id_product')?.enable();
   }
 
   // Delete Data
@@ -162,7 +158,7 @@ export class PemesananComponent {
             (pemesanan: any) => pemesanan.id !== id
           );
           document.getElementById('r_' + id)?.remove();
-          this.alertService.success('Pemesanan has been deleted');
+          this.alertService.success('Pemesanan telah dihapus');
         },
         error: (err) => {
           this.content = JSON.parse(err.error).message;
@@ -214,8 +210,8 @@ export class PemesananComponent {
     this.apiService.getSingleRequest(id).subscribe({
       next: (result) => {
         this.econtent = result.data;
-        this.pemesananForm.controls['product_id'].patchValue(
-          this.econtent[0].product_id
+        this.pemesananForm.controls['id_product'].patchValue(
+          this.econtent[0].id_product
         );
         this.pemesananForm.controls['id'].patchValue(this.econtent[0].id);
         this.pemesananForm.controls['satuan'].patchValue(
@@ -225,7 +221,7 @@ export class PemesananComponent {
           this.econtent[0].harga_satuan
         );
         this.pemesananForm.controls['vendor'].patchValue(
-          this.econtent[0].vendor
+          this.econtent[0].vendor_name
         );
         this.pemesananForm.controls['jumlah'].patchValue(
           this.econtent[0].jumlah
@@ -336,15 +332,15 @@ export class PemesananComponent {
     this.service.sortDirection = direction;
   }
 
-  onProductSelected(product_id: any) {
+  onProductSelected(id_product: any) {
     const selectedProduct = this.products.find((product: any) => {
-      return product.id === product_id;
+      return product.id_product === id_product;
     });
     if (selectedProduct) {
       this.pemesananForm.patchValue({
         satuan: selectedProduct.satuan,
         harga_satuan: selectedProduct.harga,
-        vendor: selectedProduct.vendor,
+        vendor: selectedProduct.vendor_name,
         no_telp: selectedProduct.no_telp,
       });
     }

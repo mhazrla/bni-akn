@@ -95,7 +95,6 @@ export class TransaksiComponent {
       this.requests = Object.assign([], x);
     });
 
-    document.getElementById('elmLoader')?.classList.add('d-none');
   }
 
   /**

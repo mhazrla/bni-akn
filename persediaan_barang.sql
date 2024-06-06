@@ -124,14 +124,14 @@ CREATE TABLE `pencatatan` (
   `uraian` varchar(255) NOT NULL,
   `barang_masuk` int(11) DEFAULT 0,
   `barang_keluar` int(11) DEFAULT 0,
-  `product_id` varchar(10) DEFAULT NULL
+  `id_product` varchar(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data untuk tabel `pencatatan`
 --
 
-INSERT INTO `pencatatan` (`id`, `tanggal`, `uraian`, `barang_masuk`, `barang_keluar`, `product_id`) VALUES
+INSERT INTO `pencatatan` (`id`, `tanggal`, `uraian`, `barang_masuk`, `barang_keluar`, `id_product`) VALUES
 (1, '1', 'dwd', 1, 0, '1'),
 (2, '2024-04-15', 'asfa2', 31, 1, '7'),
 (3, '2024-04-15', 'svvvvvvvvvvda', 3, 1, '7'),
@@ -244,7 +244,7 @@ INSERT INTO `product` (`id`, `nama_barang`, `jumlah`, `satuan`, `harga`, `vendor
 
 CREATE TABLE `request` (
   `id` int(11) NOT NULL,
-  `product_id` int(11) NOT NULL,
+  `id_product` int(11) NOT NULL,
   `jumlah` varchar(50) NOT NULL,
   `harga_total` varchar(50) DEFAULT NULL,
   `contact_person` varchar(50) DEFAULT NULL,
@@ -257,7 +257,7 @@ CREATE TABLE `request` (
 -- Dumping data untuk tabel `request`
 --
 
-INSERT INTO `request` (`id`, `product_id`, `jumlah`, `harga_total`, `contact_person`, `tanggal`, `no_po`, `is_verified`) VALUES
+INSERT INTO `request` (`id`, `id_product`, `jumlah`, `harga_total`, `contact_person`, `tanggal`, `no_po`, `is_verified`) VALUES
 (9, 2, '2', '82580', '956', '2024-04-27', '31321', 1),
 (10, 8, '22', '881540', '3212', '2024-04-07', '21', 1),
 (11, 14, '5', '349650', '21421', '2024-04-22', '1351', 1);
@@ -272,14 +272,14 @@ CREATE TABLE `stock` (
   `id` int(11) NOT NULL,
   `jumlah` varchar(50) DEFAULT NULL,
   `satuan` varchar(50) DEFAULT NULL,
-  `product_id` int(11) NOT NULL
+  `id_product` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data untuk tabel `stock`
 --
 
-INSERT INTO `stock` (`id`, `jumlah`, `satuan`, `product_id`) VALUES
+INSERT INTO `stock` (`id`, `jumlah`, `satuan`, `id_product`) VALUES
 (15, '1', 'Ream', 2),
 (16, '1', 'Ream', 3),
 (17, '1', 'Ream', 8),

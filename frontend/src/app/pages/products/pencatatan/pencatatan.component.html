@@ -73,7 +73,10 @@
             <table class="table" id="table-to-export">
               <thead>
                 <tr class="bg-light text-muted text-uppercase">
-                  <th class="sort" pencatatansortable="product_id">
+                  <th class="sort" pencatatansortable="id_product">
+                    ID Produk
+                  </th>
+                  <th class="sort" pencatatansortable="id_product">
                     Jenis Produk
                   </th>
                   <th class="sort" pencatatansortable="tanggal">Tanggal</th>
@@ -92,6 +95,12 @@
               <tbody>
                 <ng-container *ngFor="let data of stocks">
                   <tr id="r_{{ data.id }}">
+                    <td>
+                      <ngb-highlight
+                        [result]="data.id_product"
+                        [term]="service.searchTerm"
+                      ></ngb-highlight>
+                    </td>
                     <td>
                       <ngb-highlight
                         [result]="data.nama_barang"
@@ -230,8 +239,8 @@
                       <ng-select
                         [items]="products"
                         bindLabel="nama_barang"
-                        bindValue="id"
-                        formControlName="product_id"
+                        bindValue="id_product"
+                        formControlName="id_product"
                         (ngModelChange)="onProductSelected($event)"
                       >
                         <ng-template ng-optgroup-tmp let-item="item">
@@ -240,11 +249,11 @@
                       </ng-select>
 
                       <div
-                        *ngIf="form['product_id'].errors"
+                        *ngIf="form['id_product'].errors"
                         class="invalid-feedback"
                         align="left"
                       >
-                        <div *ngIf="form['product_id'].errors['required']">
+                        <div *ngIf="form['id_product'].errors['required']">
                           Produk wajib diisi
                         </div>
                       </div>
@@ -364,11 +373,6 @@
             </form>
           </ng-template>
           <!--End Modal -->
-          <div id="elmLoader">
-            <div class="spinner-border text-primary avatar-sm" role="status">
-              <span class="visually-hidden">Loading...</span>
-            </div>
-          </div>
         </div>
       </div>
     </div>

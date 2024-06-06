@@ -114,54 +114,10 @@
                     </div>
                   </div>
 
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      value=""
-                      id="auth-remember-check"
-                    />
-                    <label class="form-check-label" for="auth-remember-check"
-                      >Remember me</label
-                    >
-                  </div>
-
                   <div class="mt-4">
                     <button class="btn btn-success w-100" type="submit">
                       Sign In
                     </button>
-                  </div>
-
-                  <div class="mt-4 text-center">
-                    <div class="signin-other-title">
-                      <h5 class="fs-13 mb-4 title">Sign In with</h5>
-                    </div>
-                    <div class="d-flex gap-2 justify-content-center">
-                      <button
-                        type="button"
-                        class="btn btn-primary btn-icon waves-effect waves-light"
-                      >
-                        <i class="ri-facebook-fill fs-16"></i>
-                      </button>
-                      <button
-                        type="button"
-                        class="btn btn-danger btn-icon waves-effect waves-light"
-                      >
-                        <i class="ri-google-fill fs-16"></i>
-                      </button>
-                      <button
-                        type="button"
-                        class="btn btn-dark btn-icon waves-effect waves-light"
-                      >
-                        <i class="ri-github-fill fs-16"></i>
-                      </button>
-                      <button
-                        type="button"
-                        class="btn btn-info btn-icon waves-effect waves-light"
-                      >
-                        <i class="ri-twitter-fill fs-16"></i>
-                      </button>
-                    </div>
                   </div>
                 </form>
               </div>
@@ -169,18 +125,6 @@
             <!-- end card body -->
           </div>
           <!-- end card -->
-
-          <div class="mt-4 text-center">
-            <p class="mb-0">
-              Don't have an account ?
-              <a
-                routerLink="/auth/register"
-                class="fw-semibold text-primary text-decoration-underline"
-              >
-                Signup
-              </a>
-            </p>
-          </div>
         </div>
       </div>
       <!-- end row -->
@@ -189,22 +133,6 @@
   </div>
   <!-- end auth page content -->
 
-  <!-- footer -->
-  <footer class="footer">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-12">
-          <div class="text-center">
-            <p class="mb-0 text-muted">
-              &copy; {{ year }} Velzon. Crafted with
-              <i class="mdi mdi-heart text-danger"></i> by Themesbrand
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </footer>
-  <!-- end Footer -->
 </div>
 <!-- end auth-page-wrapper -->
 <app-toasts aria-live="polite" aria-atomic="true"></app-toasts>

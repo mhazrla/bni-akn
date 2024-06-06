@@ -9,7 +9,7 @@ export interface Persediaan {
   id: number;
   jumlah: string;
   satuan: string;
-  product_id: string;
+  id_product: string;
   nama_barang: string;
   harga_satuan: string;
   vendor: string;

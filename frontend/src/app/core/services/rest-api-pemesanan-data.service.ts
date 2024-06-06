@@ -71,14 +71,9 @@ export class RestApiPemesananDataService {
     );
   }
 
-  /***
-   * Get All Products
-   */
-  getAllProducts(): Observable<any> {
+  getAllStocks(): Observable<any> {
     return this.http.get(
-      GlobalComponent.API_DEV +
-        GlobalComponent.admin +
-        GlobalComponent.products,
+      GlobalComponent.API_DEV + GlobalComponent.stocks,
       httpOptions
     );
   }

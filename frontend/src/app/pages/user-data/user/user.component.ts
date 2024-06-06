@@ -82,7 +82,6 @@ export class UserComponent {
       this.users = Object.assign([], x);
     });
 
-    document.getElementById('elmLoader')?.classList.add('d-none');
     this.getUsers();
   }
 

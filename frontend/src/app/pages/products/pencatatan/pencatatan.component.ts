@@ -86,7 +86,7 @@ export class PencatatanComponent {
      */
     this.pencatatanForm = this.formBuilder.group({
       id: '',
-      product_id: ['', [Validators.required]],
+      id_product: ['', [Validators.required]],
       tanggal: ['', [Validators.required]],
       uraian: ['', [Validators.required]],
       barang_masuk: [''],
@@ -99,14 +99,13 @@ export class PencatatanComponent {
 
     this.applyFilter();
 
-    document.getElementById('elmLoader')?.classList.add('d-none');
     this.getProducts();
   }
 
   applyFilter() {
     if (this.selectedProductId) {
       this.stocks = this.service.datas.filter((data: any) => {
-        return data.product_id == this.selectedProductId;
+        return data.id_product == this.selectedProductId;
       });
     } else {
       this.stocks = Object.assign([], this.service.datas);
@@ -183,7 +182,7 @@ export class PencatatanComponent {
             (pencatatan: any) => pencatatan.id !== id
           );
           document.getElementById('r_' + id)?.remove();
-          this.alertService.success('Pencatatan has been deleted');
+          this.alertService.success('Pencatatan telah dihapus');
         },
         error: (err) => {
           this.content = JSON.parse(err.error).message;
@@ -235,8 +234,8 @@ export class PencatatanComponent {
     this.apiService.getSinglePencatatan(id).subscribe({
       next: (result) => {
         this.econtent = result.data;
-        this.pencatatanForm.controls['product_id'].setValue(
-          this.econtent[0].product_id
+        this.pencatatanForm.controls['id_product'].setValue(
+          this.econtent[0].id_product
         );
         this.pencatatanForm.controls['id'].setValue(this.econtent[0].id);
         this.pencatatanForm.controls['tanggal'].setValue(
@@ -279,6 +278,7 @@ export class PencatatanComponent {
       const existingStock = this.service.datas.find((pencatatan: any) => {
         return pencatatan.id === this.pencatatanForm.value.id;
       });
+
 
       if (existingStock) {
         this.apiService
@@ -330,9 +330,9 @@ export class PencatatanComponent {
     this.service.sortDirection = direction;
   }
 
-  onProductSelected(product_id: any) {
+  onProductSelected(id_product: any) {
     const selectedProduct = this.products.find((product: any) => {
-      return product.id === product_id;
+      return product.id_product === id_product;
     });
     if (selectedProduct) {
       this.pencatatanForm.patchValue({

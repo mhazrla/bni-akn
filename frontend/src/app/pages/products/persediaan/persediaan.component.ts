@@ -77,7 +77,7 @@ export class PersediaanComponent {
      */
     this.persediaanForm = this.formBuilder.group({
       id: '',
-      product_id: ['', [Validators.required]],
+      id_product: ['', [Validators.required]],
       satuan: ['', [Validators.required]],
       jumlah: ['', [Validators.required, Validators.min(1)]],
       harga: ['', [Validators.required]],
@@ -92,7 +92,6 @@ export class PersediaanComponent {
       this.stocks = Object.assign([], x);
     });
 
-    document.getElementById('elmLoader')?.classList.add('d-none');
     this.getProducts();
   }
 
@@ -136,7 +135,7 @@ export class PersediaanComponent {
             (persediaan: any) => persediaan.id !== id
           );
           document.getElementById('r_' + id)?.remove();
-          this.alertService.success('Persediaan has been deleted');
+          this.alertService.success('Persediaan telah dihapus');
         },
         error: (err) => {
           this.content = JSON.parse(err.error).message;
@@ -189,8 +188,8 @@ export class PersediaanComponent {
       next: (result) => {
         this.econtent = result.data;
 
-        this.persediaanForm.controls['product_id'].setValue(
-          this.econtent[0].product_id
+        this.persediaanForm.controls['id_product'].setValue(
+          this.econtent[0].id_product
         );
         this.persediaanForm.controls['id'].setValue(this.econtent[0].id);
         this.persediaanForm.controls['satuan'].setValue(
@@ -198,7 +197,7 @@ export class PersediaanComponent {
         );
         this.persediaanForm.controls['harga'].setValue(this.econtent[0].harga);
         this.persediaanForm.controls['vendor'].setValue(
-          this.econtent[0].vendor
+          this.econtent[0].vendor_name
         );
       },
       error: (err) => {
@@ -233,7 +232,6 @@ export class PersediaanComponent {
         this.apiService
           .putPersediaan(this.persediaanForm.value)
           .subscribe((res: any) => {
-            console.log('res', res);
             // Update existing role data in the local array
             const updatedStockIndex = this.service.datas.findIndex(
               (stock: any) => {
@@ -280,16 +278,16 @@ export class PersediaanComponent {
     this.service.sortDirection = direction;
   }
 
-  onProductSelected(product_id: any) {
+  onProductSelected(id_product: any) {
     const selectedProduct = this.products.find((product: any) => {
-      return product.id === product_id;
+      return product.id_product === id_product;
     });
     if (selectedProduct) {
       this.persediaanForm.patchValue({
         satuan: selectedProduct.satuan,
         jumlah: selectedProduct.jumlah,
         harga: selectedProduct.harga,
-        vendor: selectedProduct.vendor,
+        vendor: selectedProduct.vendor_name,
       });
     }
   }

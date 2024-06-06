@@ -19,7 +19,7 @@ export class RestApiPersediaanDataService {
    * Get All UserRole
    */
   getAllStocks(): Observable<any> {
-    return this.http.get(GlobalComponent.API_DEV + GlobalComponent.stock);
+    return this.http.get(GlobalComponent.API_DEV + GlobalComponent.stocks);
   }
 
   // Single

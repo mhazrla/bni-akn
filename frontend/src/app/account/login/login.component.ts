@@ -78,22 +78,33 @@ export class LoginComponent implements OnInit {
     // Login Api
     this.authenticationService
       .login(this.f['username'].value, this.f['password'].value)
-      .subscribe((data: any) => {
-        if (data.length != 0) {
-          localStorage.setItem('toast', 'true');
-          localStorage.setItem(
-            'currentUser',
-            JSON.stringify(data.currentUser[0])
-          );
-          localStorage.setItem('token', data.token);
-          this.router.navigate(['/']);
-        } else {
-          this.toastService.show(data.data, {
+      .subscribe(
+        (data: any) => {
+          console.log(data);
+          if (data.length != 0) {
+            localStorage.setItem('toast', 'true');
+            localStorage.setItem(
+              'currentUser',
+              JSON.stringify(data.currentUser[0])
+            );
+            localStorage.setItem('token', data.token);
+            this.router.navigate(['/']);
+          } else {
+            this.toastService.show(data.data, {
+              classname: 'bg-danger text-white',
+              delay: 15000,
+            });
+          }
+        },
+
+        (error) => {
+          this.toastService.show('Invalid Username or Password', {
             classname: 'bg-danger text-white',
             delay: 15000,
           });
+          console.error(error);
         }
-      });
+      );
 
     // stop here if form is invalid
     // if (this.loginForm.invalid) {

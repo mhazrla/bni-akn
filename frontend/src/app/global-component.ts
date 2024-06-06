@@ -7,6 +7,9 @@ export const GlobalComponent = {
   // API Dev
   API_DEV: 'http://localhost:3000/api/',
 
+  // Admin API Dev
+  ADMIN_API_DEV: 'http://localhost:3000/api/',
+
   // API AIO
   API_AIO: 'https://myapps.aio.co.id/cms-api-dev/api/auth/employee',
 
@@ -38,5 +41,6 @@ export const GlobalComponent = {
 
   // Role
   roles: 'roles/',
+  stocks: 'stocks/',
   permissions: 'permissions/',
 };

@@ -68,7 +68,6 @@ export class ListComponent {
         this.content = this.invoices;
         this.invoices = Object.assign([], x);
       });
-      document.getElementById('elmLoader')?.classList.add('d-none')
     }, 1200);
   }
 
