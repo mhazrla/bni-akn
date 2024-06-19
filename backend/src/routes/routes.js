@@ -54,9 +54,9 @@ router.post(
 
 // History
 router.get(
-  "/history",
+  "/history/",
   verifyToken,
-  hasAccess("CONT-READ"),
+  hasAccess("CONT-ADD"),
   HistoryController.getAllHistories
 );
 

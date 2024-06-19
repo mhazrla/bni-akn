@@ -33,12 +33,12 @@ router.get("/request/:id", RequestController.getRequest);
 router.get("/verified/request/", RequestController.verifiedRequest);
 router.post(
   "/request",
-  hasAccess("MSTR-CRUD"),
+  hasAccess("CONT-READ"),
   RequestController.insertRequest
 );
 router.put(
   "/request/:id",
-  hasAccess("CONT-ADD"),
+  hasAccess("CONT-READ"),
   RequestController.updateRequest
 );
 router.delete(

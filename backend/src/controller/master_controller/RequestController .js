@@ -5,7 +5,7 @@ getAllRequests = async (req, res) => {
   const username = req.user.username;
 
   let data;
-  if (username === "Admin") {
+  if (username === "Admin" || username === "Head") {
     data = await model.getAllRequests();
   } else {
     data = await model.getVendorRequestsByUsername(username);

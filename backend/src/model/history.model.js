@@ -7,19 +7,24 @@ getAllHistories = async () => {
       "pencatatan.id as id",
       "product.id_product as id_product",
       "product.nama_barang as nama_barang",
-      "pencatatan.barang_masuk as barang_masuk",
-      "pencatatan.barang_keluar as barang_keluar",
+      db.raw("SUM(pencatatan.barang_masuk) as barang_masuk"),
+      db.raw("SUM(pencatatan.barang_keluar) as barang_keluar"),
       "pencatatan.uraian as uraian",
       "pencatatan.tanggal as tanggal"
     )
+    .groupBy(
+      "product.id_product",
+      "product.nama_barang",
+      "pencatatan.uraian",
+      "pencatatan.tanggal"
+    )
     .orderBy("product.nama_barang");
+
   return result;
 };
 
-getHistoriesByProductId = async (id_product) => {
-  const result = await db("pencatatan")
-    .where("id_product", id_product)
-    .select("*");
+getHistoriesById = async (id) => {
+  const result = await db("pencatatan").where("id", id).select("*");
   return result;
 };
 
@@ -51,7 +56,7 @@ verifiedHistory = async () => {
 
 module.exports = {
   getAllHistories,
-  getHistoriesByProductId,
+  getHistoriesById,
   getHistory,
   getUserPermission,
   getRolePermission,

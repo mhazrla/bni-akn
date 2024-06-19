@@ -3,10 +3,10 @@ const api = require("../../tools/common");
 const path = require("path");
 
 getAllHistories = async (req, res) => {
-  const { id_product } = req.query;
+  const { id } = req.query;
   let data;
-  if (id_product) {
-    data = await model.getHistoriesByProductId(id_product);
+  if (id) {
+    data = await model.getHistoriesById(id);
   } else {
     data = await model.getAllHistories();
   }

@@ -18,16 +18,6 @@
       <div class="card-body border border-dashed border-end-0 border-start-0">
         <div class="row align-items-center gy-3 d-flex justify-content-between">
           <div class="col-xxl-5 col-sm-6">
-            <div class="search-box">
-              <input
-                type="text"
-                name="searchTerm"
-                class="form-control"
-                placeholder="Search for Name, detail, or something..."
-                [(ngModel)]="service.searchTerm"
-              />
-              <i class="ri-search-line search-icon"></i>
-            </div>
             <div class="mb-3">
               <label for="productFilter" class="form-label"
                 >Filter by Product</label
@@ -39,7 +29,10 @@
                 (change)="applyFilter()"
               >
                 <option value="">All Products</option>
-                <option *ngFor="let product of products" [value]="product.id">
+                <option
+                  *ngFor="let product of products"
+                  [value]="product.id_product"
+                >
                   {{ product.nama_barang }}
                 </option>
               </select>
@@ -173,6 +166,13 @@
                       </ul>
                     </td>
                   </tr>
+                  <tr *ngIf="data.total_per_tanggal !== undefined">
+                    <td colspan="4" class="text-center">Total</td>
+                    <td colspan="2">
+                      {{ data.total_per_tanggal.barang_masuk_total }}
+                    </td>
+                    <td></td>
+                  </tr>
                 </ng-container>
               </tbody>
             </table>
@@ -186,12 +186,7 @@
                 id="tickets-table_info"
                 role="status"
                 aria-live="polite"
-              >
-                Showing
-                {{ service.startIndex }} to {{ service.endIndex }} of
-                {{ service.totalRecords }}
-                entries
-              </div>
+              ></div>
             </div>
             <!-- Pagination -->
             <div class="col col-sm-6">
@@ -295,9 +290,7 @@
                     *ngIf="form['barang_keluar'].errors"
                     class="invalid-feedback"
                     align="left"
-                  >
-
-                  </div>
+                  ></div>
                   <!-- Barang Keluar -->
                 </div>
                 <!-- Tanggal -->

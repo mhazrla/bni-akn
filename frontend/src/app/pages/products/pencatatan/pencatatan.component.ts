@@ -27,7 +27,7 @@ import jsPDF from 'jspdf';
   providers: [PencatatanService, DecimalPipe],
 })
 export class PencatatanComponent {
-  selectedProductId!: number;
+  selectedProductId: string = '';
   // userLogged
   userLogged: any;
   // bread crumb items
@@ -97,17 +97,50 @@ export class PencatatanComponent {
      * fetches data
      */
 
-    this.applyFilter();
+    this.Leads.subscribe((x) => {
+      this.stocks = Object.assign([], x);
+      this.applyFilter();
+    });
 
     this.getProducts();
   }
 
   applyFilter() {
     if (this.selectedProductId) {
+      // Filter data berdasarkan selectedProductId
       this.stocks = this.service.datas.filter((data: any) => {
         return data.id_product == this.selectedProductId;
       });
+
+      const groupedByTanggal: any = {};
+
+      // Mengelompokkan data berdasarkan tanggal
+      this.stocks.forEach((data: any) => {
+        const tanggal = data.tanggal;
+        if (!groupedByTanggal[tanggal]) {
+          groupedByTanggal[tanggal] = {
+            barang_masuk_total: 0,
+            barang_keluar_total: 0,
+          };
+        }
+        groupedByTanggal[tanggal].barang_masuk_total += data.barang_masuk;
+        groupedByTanggal[tanggal].barang_keluar_total += data.barang_keluar;
+      });
+
+      // Menambahkan baris "Total" ke dalam stocks
+      const totalStocks: any[] = [];
+      Object.keys(groupedByTanggal).forEach((tanggal) => {
+        totalStocks.push({
+          tanggal,
+          uraian: 'Total',
+          barang_masuk: groupedByTanggal[tanggal].barang_masuk_total,
+          barang_keluar: groupedByTanggal[tanggal].barang_keluar_total,
+        });
+      });
+
+      this.stocks = this.stocks.concat(totalStocks);
     } else {
+      // Tampilkan semua data tanpa baris "Total"
       this.stocks = Object.assign([], this.service.datas);
     }
   }
@@ -116,17 +149,13 @@ export class PencatatanComponent {
     const DATA = document.getElementById('table-to-export');
 
     if (DATA) {
-      // Remove the Action column from the table if present
-      const rows = DATA.querySelectorAll('tr');
-      rows.forEach((row) => {
-        const cells = row.querySelectorAll('td, th');
-        cells.forEach((cell, index) => {
-          if (cell.textContent === 'Action') {
-            row.removeChild(cell);
-          }
-        });
-      });
+      // Hapus kolom "Action" dari tabel jika ada
+      const actionColumnIndex = this.getActionColumnIndex(DATA);
+      if (actionColumnIndex !== -1) {
+        this.removeActionColumn(DATA, actionColumnIndex);
+      }
 
+      // Gunakan html2canvas untuk mengonversi tabel menjadi gambar
       html2canvas(DATA).then((canvas) => {
         let fileWidth = 208;
         let fileHeight = (canvas.height * fileWidth) / canvas.width;
@@ -136,10 +165,33 @@ export class PencatatanComponent {
         PDF.addImage(FILEURI, 'PNG', 0, position, fileWidth, fileHeight);
         PDF.save('angular-demo.pdf');
 
-        // Refresh the page to restore the Action column
+        // Refresh halaman untuk mengembalikan kolom "Action" ke tabel aslinya
         window.location.reload();
       });
     }
+  }
+
+  // Fungsi untuk mencari indeks kolom "Action" dalam tabel
+  getActionColumnIndex(table: HTMLElement): number {
+    const headerRow = table.querySelector('thead tr');
+    if (headerRow) {
+      const headerCells = Array.from(headerRow.children);
+      return headerCells.findIndex(
+        (cell) => cell.textContent?.trim() === 'Action'
+      );
+    }
+    return -1;
+  }
+
+  // Fungsi untuk menghapus kolom "Action" dari tabel
+  removeActionColumn(table: HTMLElement, columnIndex: number) {
+    const rows = table.querySelectorAll('tr');
+    rows.forEach((row) => {
+      const cells = row.querySelectorAll('td, th');
+      if (cells.length > columnIndex) {
+        row.removeChild(cells[columnIndex]);
+      }
+    });
   }
 
   /**
@@ -278,7 +330,6 @@ export class PencatatanComponent {
       const existingStock = this.service.datas.find((pencatatan: any) => {
         return pencatatan.id === this.pencatatanForm.value.id;
       });
-
 
       if (existingStock) {
         this.apiService
